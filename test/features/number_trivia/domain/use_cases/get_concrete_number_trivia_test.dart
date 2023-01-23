@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:number_trivia/features/number_trivia/domain/entitites/number_trivia.dart';
 import 'package:number_trivia/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,9 +24,9 @@ void main() {
 
   test(
     'should get trivia for the number from repository',
-    () async* {
+    () async {
       // arrange
-      when(mockNumberTriviaRepository.getConcreteNumberTrivia(tNumber))
+      when(() => mockNumberTriviaRepository.getConcreteNumberTrivia(tNumber))
           .thenAnswer((_) async => const Right(tNumberTrivia));
 
       // act
@@ -36,7 +36,7 @@ void main() {
 
       // assert
       expect(result, const Right(tNumberTrivia));
-      verify(mockNumberTriviaRepository.getConcreteNumberTrivia(tNumber));
+      verify(() => mockNumberTriviaRepository.getConcreteNumberTrivia(tNumber));
       verifyNoMoreInteractions(mockNumberTriviaRepository);
     },
   );
