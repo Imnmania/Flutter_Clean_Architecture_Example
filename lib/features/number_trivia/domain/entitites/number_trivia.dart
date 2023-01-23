@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 
 class NumberTrivia extends Equatable {
@@ -13,36 +11,4 @@ class NumberTrivia extends Equatable {
 
   @override
   List<Object> get props => [text, number];
-
-  NumberTrivia copyWith({
-    String? text,
-    int? number,
-  }) {
-    return NumberTrivia(
-      text: text ?? this.text,
-      number: number ?? this.number,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'text': text,
-      'number': number,
-    };
-  }
-
-  factory NumberTrivia.fromMap(Map<String, dynamic> map) {
-    return NumberTrivia(
-      text: map['text'] as String,
-      number: map['number'] as int,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory NumberTrivia.fromJson(String source) =>
-      NumberTrivia.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  bool get stringify => true;
 }
