@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 
-abstract class Failure extends Equatable {
+abstract class Failures extends Equatable {
   final List<dynamic> properties;
 
-  const Failure({
+  const Failures({
     this.properties = const <dynamic>[],
   });
 
