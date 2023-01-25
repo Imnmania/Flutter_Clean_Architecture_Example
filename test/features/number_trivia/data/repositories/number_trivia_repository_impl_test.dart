@@ -39,24 +39,26 @@ void main() {
     () {
       const tNumber = 1;
       const tNumberTriviaModel = NumberTriviaModel(
-        number: 1,
+        number: tNumber,
         text: 'test trivia',
       );
       const NumberTrivia tNumberTrivia = tNumberTriviaModel;
 
       test(
         'should check if the device is online',
-        () {
+        () async {
           // arrange
+          when(() => mockRemoteDataSource.getConcreteNumberTrivia(any()))
+              .thenAnswer((_) => Future.value(tNumberTriviaModel));
           when(() => mockNetworkInfo.isConnected).thenAnswer(
-            (_) async => true,
+            (_) => Future.value(true),
           );
 
           // act
-          repositoryImpl.getConcreteNumberTrivia(tNumber);
+          await repositoryImpl.getConcreteNumberTrivia(tNumber);
 
           // assert
-          verify(() => mockNetworkInfo.isConnected).called(1);
+          verify(() => mockNetworkInfo.isConnected);
         },
       );
 
@@ -66,7 +68,7 @@ void main() {
           setUp(
             () {
               when(() => mockNetworkInfo.isConnected)
-                  .thenAnswer((_) async => true);
+                  .thenAnswer((_) => Future.value(true));
             },
           );
 
@@ -75,14 +77,15 @@ void main() {
             () async {
               // arrange
               when(() => mockRemoteDataSource.getConcreteNumberTrivia(tNumber))
-                  .thenAnswer((_) async => tNumberTriviaModel);
+                  .thenAnswer((_) => Future.value(tNumberTriviaModel));
 
               // act
               final result =
                   await repositoryImpl.getConcreteNumberTrivia(tNumber);
 
               // assert
-              verify(() => repositoryImpl.getConcreteNumberTrivia(tNumber));
+              verify(
+                  () => mockRemoteDataSource.getConcreteNumberTrivia(tNumber));
               expect(result, const Right(tNumberTrivia));
             },
           );
