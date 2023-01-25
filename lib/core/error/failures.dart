@@ -12,3 +12,8 @@ abstract class Failures extends Equatable {
         properties,
       ];
 }
+
+/// General failures
+class ServerFailure extends Failures {}
+
+class CacheFailure extends Failures {}
