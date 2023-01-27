@@ -2,6 +2,8 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:number_trivia/core/error/failures.dart';
+import 'package:number_trivia/core/use_cases/use_case.dart';
 import 'package:number_trivia/core/util/input_converter.dart';
 import 'package:number_trivia/features/number_trivia/domain/entitites/number_trivia.dart';
 import 'package:number_trivia/features/number_trivia/domain/use_cases/get_concrete_number_trivia.dart';
@@ -25,18 +27,51 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
     required this.getRandomNumberTrivia,
     required this.inputConverter,
   }) : super(const EmptyState()) {
-    on<GetTriviaForConcreteNumberEvent>((event, emit) {
-      final inputEither =
-          inputConverter.stringToUnsignedInteger(event.numberString);
+    on<GetTriviaForConcreteNumberEvent>(
+      (event, emit) {
+        emit(const LoadingState());
+        final inputEither =
+            inputConverter.stringToUnsignedInteger(event.numberString);
 
-      inputEither.fold(
-        (failure) {
-          emit(const ErrorState(errorMessage: INVALID_FAILURE_MESSAGE));
-        },
-        (integer) {
-          emit(const EmptyState());
-        },
-      );
-    });
+        inputEither.fold(
+          (failure) {
+            emit(const ErrorState(errorMessage: INVALID_FAILURE_MESSAGE));
+          },
+          (integer) async {
+            final value =
+                await getConcreteNumberTrivia(params: Params(number: integer));
+            value.fold(
+              (failure) => emit(ErrorState(
+                errorMessage: _failureMessage(failure),
+              )),
+              (trivia) => emit(LoadedState(trivia: trivia)),
+            );
+          },
+        );
+      },
+    );
+    on<GetTriviaForRandomNumberEvent>(
+      (event, emit) async {
+        emit(const LoadingState());
+        final value = await getRandomNumberTrivia(params: const NoParams());
+        value.fold(
+          (failure) => emit(ErrorState(
+            errorMessage: _failureMessage(failure),
+          )),
+          (trivia) => emit(LoadedState(trivia: trivia)),
+        );
+      },
+    );
+  }
+
+  String _failureMessage(Failures failures) {
+    switch (failures.runtimeType) {
+      case ServerFailure:
+        return SERVER_FAILURE_MESSAGE;
+      case CacheFailure:
+        return CACHE_FAILURE_MESSAGE;
+      default:
+        return 'Unexpected Failure';
+    }
   }
 }

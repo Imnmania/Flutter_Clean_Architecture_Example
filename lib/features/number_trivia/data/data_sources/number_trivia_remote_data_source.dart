@@ -1,5 +1,5 @@
-import 'package:number_trivia/core/error/exceptions.dart';
-import 'package:number_trivia/features/number_trivia/data/models/number_trivia_model.dart';
+import '../../../../core/error/exceptions.dart';
+import '../models/number_trivia_model.dart';
 
 abstract class NumberTriviaRemoteDataSource {
   /// Calls the http://numbersapi.com/{number} endpoint
