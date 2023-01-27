@@ -1,7 +1,7 @@
 import 'package:data_connection_checker_nulls/data_connection_checker_nulls.dart';
 import 'package:get_it/get_it.dart';
-import 'package:number_trivia/core/network/network_info.dart';
-import 'package:number_trivia/core/network/impl/network_info_impl.dart';
+import 'core/network/network_info.dart';
+import 'core/network/impl/network_info_impl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/util/input_converter.dart';
@@ -56,13 +56,12 @@ Future<void> getItInit() async {
     ),
   );
 
+  //! Core
   sl.registerLazySingleton<NetworkInfo>(
     () => NetworkInfoImpl(
       sl(),
     ),
   );
-
-  //! Core
 
   //! External
   final prefs = await SharedPreferences.getInstance();
