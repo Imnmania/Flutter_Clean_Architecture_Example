@@ -7,9 +7,13 @@ abstract class NumberTriviaState extends Equatable {
   List<Object> get props => [];
 }
 
-class EmptyState extends NumberTriviaState {}
+class EmptyState extends NumberTriviaState {
+  const EmptyState();
+}
 
-class LoadingState extends NumberTriviaState {}
+class LoadingState extends NumberTriviaState {
+  const LoadingState();
+}
 
 class LoadedState extends NumberTriviaState {
   final NumberTrivia trivia;
@@ -36,6 +40,14 @@ class ErrorState extends NumberTriviaState {
   const ErrorState({
     required this.errorMessage,
   });
+
+  ErrorState copyWith({
+    String? errorMessage,
+  }) {
+    return ErrorState(
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
   List<Object> get props => [errorMessage];
